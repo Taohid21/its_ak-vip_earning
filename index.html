@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Watch Ads And Earn Money 🤑 | Ak_Vip.Earn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(to bottom, #000000, #1a1a1a);
+      color: white;
+    }
+    .font-orbitron {
+      font-family: 'Orbitron', sans-serif;
+    }
+    .hidden {
+      display: none;
+    }
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between">
+
+<!-- Account Setup Page -->
+<div id="accountPage" class="flex flex-col items-center justify-center min-h-screen p-6">
+  <h1 class="text-3xl font-orbitron mb-6 text-blue-400">Create Account</h1>
+  <input id="username" type="text" placeholder="Enter your name" class="mb-4 p-3 rounded w-full max-w-xs text-black">
+  <input id="profilePic" type="file" accept="image/*" class="mb-4 p-3 rounded w-full max-w-xs text-white">
+  <button onclick="saveAccount()" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded font-orbitron">Submit</button>
+</div>
+
+<!-- Main Page -->
+<div id="mainPage" class="flex flex-col min-h-screen hidden">
+
+  <header class="flex items-center justify-between border-b border-red-600 px-4 py-3">
+    <div class="flex items-center space-x-2">
+      <img id="headerImg" src="" alt="Profile" class="rounded-full w-10 h-10 object-cover">
+      <span id="headerName" class="text-blue-600 font-orbitron text-lg select-none"></span>
+    </div>
+    <div id="balance" class="text-green-400 font-orbitron text-lg select-none">
+      Balance: 0 ৳
+    </div>
+  </header>
+
+  <main class="flex-grow p-4 space-y-4">
+    <div class="text-xl font-orbitron mb-4">Tasks Available: 2</div>
+
+    <div class="flex items-center justify-between border-t border-b border-white py-3">
+      <div class="flex items-center space-x-2 text-white text-lg font-orbitron">
+        <span>1 Min. Visit Website</span>
+        <i class="fas fa-laptop"></i>
+      </div>
+      <button onclick="visitWebsite('https://example.com', 5)" class="border-l-2 border-red-600 pl-3 text-green-500 font-orbitron text-2xl">5 ৳</button>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b border-white py-3">
+      <div class="flex items-center space-x-2 text-white text-lg font-orbitron">
+        <span>Watch Ad</span>
+        <span class="text-2xl">🧩</span>
+      </div>
+      <button onclick="visitWebsite('https://example2.com', 5)" class="border-l-2 border-red-600 pl-3 text-green-500 font-orbitron text-2xl">5 ৳</button>
+    </div>
+  </main>
+
+  <nav class="border-t border-red-600 flex justify-around items-center py-3 text-white text-sm font-orbitron">
+    <button id="homeBtn" class="flex flex-col items-center text-blue-600" onclick="showSection('home')">
+      <i class="fas fa-home text-xl"></i><span>Home</span>
+    </button>
+    <button class="flex flex-col items-center" onclick="showSection('spin')">
+      <i class="fas fa-desktop text-xl"></i><span>Spin</span>
+    </button>
+    <button class="flex flex-col items-center" onclick="withdraw()">
+      <i class="fas fa-film text-xl"></i><span>Withdraw</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- Spin Section -->
+<div id="spinPage" class="hidden flex flex-col items-center justify-center min-h-screen space-y-6 p-6">
+  <h1 class="text-3xl font-orbitron text-yellow-400">Spin & Win</h1>
+  <button id="spinBtn" onclick="startSpin()" class="bg-red-500 hover:bg-red-600 px-8 py-4 rounded-full text-xl font-bold">SPIN</button>
+  <div id="spinResult" class="text-2xl font-orbitron text-green-400"></div>
+  <button onclick="showSection('home')" class="mt-6 text-blue-400">Back to Home</button>
+</div>
+
+<script>
+// LocalStorage Save Account
+function saveAccount() {
+  const name = document.getElementById('username').value.trim();
+  const file = document.getElementById('profilePic').files[0];
+  
+  if (!name || !file) {
+    alert('Please enter your name and select a picture!');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    localStorage.setItem('username', name);
+    localStorage.setItem('profilePic', e.target.result);
+    localStorage.setItem('balance', 0);
+    localStorage.setItem('banCount', 0);
+    showMainPage();
+  };
+  reader.readAsDataURL(file);
+}
+
+// Show Main Page
+function showMainPage() {
+  document.getElementById('accountPage').classList.add('hidden');
+  document.getElementById('mainPage').classList.remove('hidden');
+  document.getElementById('spinPage').classList.add('hidden');
+
+  document.getElementById('headerName').innerText = localStorage.getItem('username');
+  document.getElementById('headerImg').src = localStorage.getItem('profilePic');
+  updateBalance();
+}
+
+// Update Balance
+function updateBalance() {
+  const balance = localStorage.getItem('balance') || 0;
+  document.getElementById('balance').innerText = `Balance: ${balance} ৳`;
+}
+
+// Task Visit Website
+let timer;
+function visitWebsite(url, reward) {
+  if (localStorage.getItem('banned') === 'true') {
+    alert('Your account is banned!');
+    return;
+  }
+
+  const newWindow = window.open(url, '_blank');
+
+  timer = setTimeout(() => {
+    clearTimeout(timer);
+    newWindow.close();
+    alert('Congratulations! You earned ' + reward + '৳');
+    let currentBalance = parseInt(localStorage.getItem('balance') || 0);
+    currentBalance += reward;
+    localStorage.setItem('balance', currentBalance);
+    updateBalance();
+  }, 60000);
+
+  const checkClosed = setInterval(() => {
+    if (newWindow.closed) {
+      clearInterval(checkClosed);
+      clearTimeout(timer);
+      alert('You did not stay for 1 minute! Warning added.');
+      let banCount = parseInt(localStorage.getItem('banCount') || 0) + 1;
+      localStorage.setItem('banCount', banCount);
+      if (banCount >= 3) {
+        localStorage.setItem('banned', 'true');
+        alert('Your account has been banned for too many early exits.');
+      }
+    }
+  }, 1000);
+}
+
+// Navigation Between Sections
+function showSection(section) {
+  if (section === 'home') {
+    document.getElementById('mainPage').classList.remove('hidden');
+    document.getElementById('spinPage').classList.add('hidden');
+  } else if (section === 'spin') {
+    document.getElementById('mainPage').classList.add('hidden');
+    document.getElementById('spinPage').classList.remove('hidden');
+  }
+}
+
+// Spin Functionality
+function startSpin() {
+  let balance = parseInt(localStorage.getItem('balance') || 0);
+  if (balance < 5) {
+    alert('Not enough balance to spin!');
+    return;
+  }
+
+  const results = [0, 5, 10, 15, 20, 25];
+  const random = results[Math.floor(Math.random() * results.length)];
+  
+  if (random === 0) {
+    balance -= 5;
+    document.getElementById('spinResult').innerText = 'Oh no! Lost 5৳';
+  } else {
+    balance += random;
+    document.getElementById('spinResult').innerText = 'You won ' + random + '৳!';
+  }
+
+  localStorage.setItem('balance', balance);
+  updateBalance();
+}
+
+// Withdraw Page
+function withdraw() {
+  window.location.href = "https://yourwithdrawsite.com"; 
+}
+
+// On Page Load
+window.onload = function() {
+  if (localStorage.getItem('username') && localStorage.getItem('profilePic')) {
+    showMainPage();
+  }
+};
+</script>
+
+</body>
+</html>
