@@ -1,183 +1,295 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ak_Vip.Earn</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tinoz</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Quicksand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Quicksand', sans-serif;
-      background: black;
+      font-family: 'Comic Neue', cursive, sans-serif;
     }
-    .font-orbitron {
-      font-family: 'Orbitron', sans-serif;
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
     }
-    #content-area {
-      margin-bottom: 80px;
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fade-in-up { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .animate-fade-in { animation: fade-in 1s ease-in-out; }
+    .animate-fade-in-up { animation: fade-in-up 0.6s ease-out; }
+    .active { color: #3b82f6; }
   </style>
 </head>
-<body class="flex flex-col min-h-screen text-white">
-  <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 flex items-center justify-between border-b border-red-600 px-4 py-2 bg-black z-20">
-    <div class="flex items-center space-x-2">
-      <img id="profileImage" src="" class="rounded-full w-10 h-10 object-cover" alt="Profile">
-      <span id="profileName" class="text-blue-500 font-orbitron text-lg select-none">Ak_Vip.Earn</span>
+<body class="bg-black text-white min-h-screen flex flex-col">
+  <!-- HEADER START -->
+<div id="myHeader">
+  <!-- Top Header -->
+  <div id="mainHeader" class="fixed top-0 left-0 w-full h-16 bg-black text-white flex items-center justify-between px-4 z-50 shadow-lg">
+    <!-- Menu Icon -->
+    <button id="menuToggle" class="text-white hover:text-gray-400 focus:outline-none">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <!-- Logo Text -->
+    <h1 class="text-2xl font-semibold tracking-wide animate-pulse select-none">
+      <span class="text-white">Ti</span><span class="text-gray-400">Noz</span>
+    </h1>
+
+    <!-- Search Icon -->
+    <button id="searchIcon" class="text-white hover:text-gray-400 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 1 0-12 0 6 6 0 0 0 12 0z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Search View -->
+  <div id="searchBox" class="fixed top-0 left-0 w-full h-20 bg-gray-900 z-50 flex items-center px-4 space-x-3 hidden">
+    <input id="searchInput" type="text" placeholder="Search here..." class="w-full p-2 text-lg bg-black text-white rounded-md border border-gray-700 outline-none" />
+    <button id="closeSearch">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M6 18L18 6M6 6l12 12" ></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Side Drawer -->
+  <div id="sideDrawer" class="fixed top-0 left-0 w-64 h-full bg-gray-900 text-white transform -translate-x-full transition-transform duration-300 z-40 shadow-xl">
+    <div class="p-4 border-b border-gray-700 text-lg font-semibold">Menu</div>
+    <ul class="p-4 space-y-2">
+      <li class="hover:text-blue-400 cursor-pointer">Home</li>
+      <li class="hover:text-blue-400 cursor-pointer">Live</li>
+      <li class="hover:text-blue-400 cursor-pointer">Premium</li>
+      <li class="hover:text-blue-400 cursor-pointer">Settings</li>
+    </ul>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-30"></div>
+</div>
+<div style="padding-top: 70px;">
+  <!-- আপনার কন্টেন্ট শুরু -->
+</div>
+<!-- HEADER END -->
+
+<!-- SCRIPT -->
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const closeSearch = document.getElementById('closeSearch');
+  const mainHeader = document.getElementById('mainHeader');
+  const searchBox = document.getElementById('searchBox');
+  const menuToggle = document.getElementById('menuToggle');
+  const sideDrawer = document.getElementById('sideDrawer');
+  const overlay = document.getElementById('overlay');
+
+  // Search toggle
+  document.getElementById('searchIcon').addEventListener('click', () => {
+    mainHeader.classList.add('hidden');
+    searchBox.classList.remove('hidden');
+    searchInput.focus();
+  });
+
+  closeSearch.addEventListener('click', () => {
+    mainHeader.classList.remove('hidden');
+    searchBox.classList.add('hidden');
+    searchInput.value = "";
+    filterContent("");
+  });
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    filterContent(query);
+  });
+
+  function filterContent(query) {
+    const items = document.querySelectorAll('.filter-item');
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(query) ? "block" : "none";
+    });
+  }
+
+  // Side drawer toggle
+  menuToggle.addEventListener('click', () => {
+    sideDrawer.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+  });
+
+  overlay.addEventListener('click', () => {
+    sideDrawer.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+  });
+</script>
+</div>
+<div class="relative w-full max-w-5xl mx-auto overflow-hidden rounded-3xl shadow-2xl border border-neutral-800">
+  <div id="slider" class="flex transition-transform duration-700 ease-in-out">
+    <div class="w-full flex-shrink-0 bg-black flex items-center justify-center p-2">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrTEESD4GLVYGgoVqQU-d1dl0xKhTNn76k0DwChQziRS3-oLLH8OqFFb6f&s=10" class="max-h-[450px] object-contain rounded-xl" />
     </div>
-    <div class="text-green-500 font-orbitron text-lg select-none">
-      Balance: <span id="balance">0</span> ৳
+    <div class="w-full flex-shrink-0 bg-black flex items-center justify-center p-2">
+      <img src="https://i.postimg.cc/Z5tBhRvp/20250423-223243.jpg" class="max-h-[450px] object-contain rounded-xl" />
     </div>
-  </header>  <!-- Main Content -->  <main id="content-area" class="pt-20 px-4 space-y-4 flex-grow">
-    <div id="task-list" class="space-y-4"></div>
-    <div id="spin-area" class="hidden flex flex-col items-center justify-center space-y-4">
-      <div class="w-60 h-60 rounded-full border-8 border-red-500 flex items-center justify-center animate-spin-slow">
-        <span class="text-3xl font-orbitron">SPIN</span>
-      </div>
-      <button id="spinButton" class="bg-red-500 hover:bg-red-700 px-4 py-2 rounded font-bold">Spin Now</button>
+    <div class="w-full flex-shrink-0 bg-black flex items-center justify-center p-2">
+      <img src="https://i.postimg.cc/QxW9P5Cj/20250423-223337.jpg" class="max-h-[450px] object-contain rounded-xl" />
     </div>
-    <div id="withdraw-area" class="hidden flex flex-col items-center justify-center">
-      <a href="https://example.com" target="_blank" class="bg-green-500 hover:bg-green-700 px-6 py-3 rounded text-xl font-bold">Go to Withdraw Page</a>
+    <div class="w-full flex-shrink-0 bg-black flex items-center justify-center p-2">
+      <img src="https://i.postimg.cc/XNPBQxV2/20250423-223450.jpg" class="max-h-[450px] object-contain rounded-xl" />
     </div>
-  </main>  <!-- Navigation -->  <nav class="fixed bottom-0 left-0 right-0 border-t border-red-600 flex justify-around items-center py-2 bg-black z-20 text-white text-xs font-orbitron select-none">
-    <button id="homeBtn" class="flex flex-col items-center text-blue-500">
-      <i class="fas fa-home text-2xl"></i>
+  </div>
+
+  <!-- Dot Indicators (clean, no background panel) -->
+  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+    <span class="dot w-3 h-3 bg-white/60 rounded-full"></span>
+    <span class="dot w-3 h-3 bg-white/60 rounded-full"></span>
+    <span class="dot w-3 h-3 bg-white/60 rounded-full"></span>
+    <span class="dot w-3 h-3 bg-white/60 rounded-full"></span>
+  </div>
+</div>
+
+<style>
+  .dot {
+    transition: all 0.3s ease;
+  }
+  .dot.active {
+    width: 14px;
+    height: 14px;
+    background-color: #ef4444;
+    opacity: 1 !important;
+    box-shadow: 0 0 6px #ef4444aa;
+  }
+</style>
+
+<script>
+  const slider = document.getElementById('slider');
+  const dots = document.querySelectorAll('.dot');
+  let index = 0;
+  const totalSlides = slider.children.length;
+
+  function updateSlider() {
+    slider.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach(dot => dot.classList.remove('active'));
+    dots[index].classList.add('active');
+  }
+
+  function autoSlide() {
+    index = (index + 1) % totalSlides;
+    updateSlider();
+  }
+
+  updateSlider();
+  setInterval(autoSlide, 3000);
+</script>
+</div>
+  <!-- Main Content -->  <main id="content" class="px-4 py-4 flex-grow space-y-6"></main>  <!-- Navigation -->  <nav class="bg-black border-t border-gray-700 py-3 px-6 flex justify-around text-white text-xs font-semibold select-none sticky bottom-0">
+    <button onclick="showTab('home')" id="tab-home" class="flex flex-col items-center space-y-1 active">
+      <i class="fas fa-home text-lg"></i>
       <span>Home</span>
     </button>
-    <button id="spinBtn" class="flex flex-col items-center">
-      <i class="fas fa-sync-alt text-2xl"></i>
-      <span>Spin</span>
+    <button onclick="showTab('tv')" id="tab-tv" class="flex flex-col items-center space-y-1">
+      <i class="fas fa-tv text-lg"></i>
+      <span>TV</span>
     </button>
-    <button id="withdrawBtn" class="flex flex-col items-center">
-      <i class="fas fa-wallet text-2xl"></i>
-      <span>Withdraw</span>
+    <button onclick="showTab('movies')" id="tab-movies" class="flex flex-col items-center space-y-1">
+      <i class="fas fa-film text-lg"></i>
+      <span>Movies</span>
     </button>
-  </nav>
-  <!-- Advertisement Script Start -->
-<script 
-  type="text/javascript" 
-  src="//pl26489546.profitableratecpm.com/72/5c/e1/725ce1bea3228c36fcb5e8e549c2dba7.js" 
-  async 
-  defer>
-</script>
-<!-- Advertisement Script End -->
-  <!-- Advertisement Script Start -->
-<script 
-  type="text/javascript" 
-  src="//pl26489383.profitableratecpm.com/b8/2f/77/b82f77e5d484f2028a2d76c6ac59f642.js" 
-  async 
-  defer>
-</script>
-<!-- Advertisement Script End -->
-  <script>
-    // Utils
-    function saveToStorage(key, value) {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-    function getFromStorage(key) {
-      return JSON.parse(localStorage.getItem(key));
-    }
+  </nav>  <!-- Script -->  <script>
+    const content = document.getElementById('content');
 
-    // Initial Setup
-    let profile = getFromStorage('profile');
-    let balance = getFromStorage('balance') || 0;
-
-    if (!profile) {
-      profile = {};
-      let name = prompt("Enter your Name:");
-      let img = prompt("Enter your Profile Image URL:");
-      profile.name = name || "User";
-      profile.img = img || "https://via.placeholder.com/150";
-      saveToStorage('profile', profile);
-    }
-
-    document.getElementById('profileName').innerText = profile.name;
-    document.getElementById('profileImage').src = profile.img;
-    document.getElementById('balance').innerText = balance;
-
-    // Task List
-    const tasks = [
-      { title: '1 Min. Visit Website', reward: 5, url: 'https://example.com/visit1' },
-      { title: 'Watch Ad', reward: 5, url: 'https://example.com/visit2' }
+    const homeData = [
+      {
+        title: 'Cricket',
+        items: [
+          { title: 'BAN VS ZIMBABWE', img: 'https://storage.googleapis.com/a1aa/image/68dab7d9-11a1-4766-10f5-b6ac19f05879.jpg', link: '#' },
+          { title: 'IPL 2025', img: 'https://image.tsports.com/images/mobile_thumbnail/1742534265-IMG_3293.jpeg', link: '#' },
+          { title: 'PSL', img: 'https://image.tsports.com/images/mobile_thumbnail/1744288356-LIVE-1280.jpg', link: '#' }
+        ]
+      },
+      {
+        title: 'Football',
+        items: [
+          { title: 'Champions League', img: 'https://storage.googleapis.com/a1aa/image/d26a1f71-faa1-47cb-6bf5-604af95a9c17.jpg', link: '#' },
+          { title: 'UEFA Europa League', img: 'https://storage.googleapis.com/a1aa/image/93980d17-b9d7-4742-3e94-898c111e501f.jpg', link: '#' },
+          { title: 'Bundesliga', img: 'https://storage.googleapis.com/a1aa/image/d44ac05d-dd88-4d71-2e73-7230e50f0089.jpg', link: '#' }
+        ]
+      },
+      {
+        title: 'Others',
+        items: [
+          { title: 'BIG BOSS', img: 'https://storage.googleapis.com/a1aa/image/9dc2c01e-f987-4b66-4b95-b146706741be.jpg', link: '#' },
+          { title: 'WWE 7/24', img: 'https://storage.googleapis.com/a1aa/image/4eaf9efc-4dfe-4481-e7a4-038fd90457f0.jpg', link: '#' },
+          { title: 'Netflix', img: 'https://storage.googleapis.com/a1aa/image/86364b0a-aafa-42ef-a61b-db98b34bed31.jpg', link: '#' }
+        ]
+      }
     ];
 
-    const taskList = document.getElementById('task-list');
+    const tvData = [
+      'Bangladesh', 'India', 'Toffee'
+    ];
 
-    tasks.forEach((task, index) => {
-      const div = document.createElement('div');
-      div.className = "flex items-center justify-between border-t border-b border-white py-3";
-      div.innerHTML = `
-        <div class="flex items-center space-x-2 text-white text-lg font-orbitron select-none">
-          <span>${task.title}</span>
-          <i class="fas fa-external-link-alt"></i>
-        </div>
-        <button onclick="startTask(${index})" class="border-l-2 border-red-600 pl-3 text-green-500 font-orbitron text-2xl">${task.reward} ৳</button>
-      `;
-      taskList.appendChild(div);
-    });
+    const moviesData = [
+      { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBnnuiGey390NcO7WV6N-Lzc5V3hgRr4XFo2jVsmPld-1gGSlSvnw9fVs0&s=10', link: '#' },
+      { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDlKVtSj82cs_btdX9sAqqQ1HVAq3rkokvNHM-anVdBdG6PtzL51xD3rU&s=10', link: 'https://taohid21.github.io/Ti-SPORTS---Watch-Movies-Free/8.html' },
+      { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGtwKDiBs9jwmwvP853VLiHZknSAzJWxFa0Qe0ck_1_6vbOBeVcIhOZA-8&s=10', link: 'https://taohid21.github.io/Ti-SPORTS---Watch-Movies-Free/20.html' },
+      { img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZajFvb5YVT63lRTzqmB9yEFKOn9fryc0K7eZYmRWaweejSeRe8TqZb4nc&s=10', link: 'https://taohid21.github.io/Ti-SPORTS---Watch-Movies-Free/15.html' }
+    ];
 
-    let wrongTries = getFromStorage('wrongTries') || 0;
-
-    function startTask(index) {
-      const task = tasks[index];
-      const timerKey = 'taskStart';
-      saveToStorage(timerKey, Date.now());
-      window.open(task.url, '_blank');
-      setTimeout(() => {
-        const startTime = getFromStorage(timerKey);
-        if (Date.now() - startTime >= 60000) {
-          balance += task.reward;
-          saveToStorage('balance', balance);
-          document.getElementById('balance').innerText = balance;
-          alert('Congratulations! You earned ' + task.reward + ' ৳');
-        } else {
-          wrongTries++;
-          saveToStorage('wrongTries', wrongTries);
-          alert('You did not stay full 1 minute! Warning ' + wrongTries);
-          if (wrongTries >= 3) {
-            alert('Account Banned!');
-            document.getElementById('task-list').innerHTML = '<p class="text-red-500 text-center">Account Banned!</p>';
-          }
-        }
-      }, 61000);
+    function showTab(tab) {
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      content.innerHTML = '';
+      if (tab === 'home') {
+        homeData.forEach(section => {
+          const sectionEl = document.createElement('section');
+          sectionEl.innerHTML = `
+            <h2 class="text-white text-xl mb-2 font-semibold select-none">${section.title}</h2>
+            <div class="flex space-x-3 overflow-x-auto pb-1 scrollbar-hide">
+              ${section.items.map(item => `
+                <a href="${item.link}" class="min-w-[140px] border border-gray-600 rounded-md overflow-hidden flex-shrink-0 transition hover:scale-105 hover:border-blue-400">
+                  <img src="${item.img}" alt="${item.title}" class="w-full h-20 object-cover" />
+                  <p class="text-white text-center text-sm font-semibold py-1 select-none">${item.title}</p>
+                </a>
+              `).join('')}
+            </div>
+          `;
+          content.appendChild(sectionEl);
+        });
+      } else if (tab === 'tv') {
+        tvData.forEach(title => {
+          const el = document.createElement('section');
+          el.innerHTML = `
+            <h2 class="text-white text-xl font-semibold mb-3">${title}</h2>
+            <div class="grid grid-cols-3 gap-4">
+              ${Array.from({ length: 3 }).map(() => `
+                <a href="#" class="rounded-full overflow-hidden border border-gray-600 transition hover:scale-105">
+                  <img src="https://i.postimg.cc/Df6PMpdT/3549335-ico.png" class="object-cover w-full h-24" />
+                </a>
+              `).join('')}
+            </div>
+          `;
+          content.appendChild(el);
+        });
+      } else if (tab === 'movies') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'grid grid-cols-2 gap-4';
+        wrapper.innerHTML = moviesData.map(m => `
+          <a href="${m.link}" class="block overflow-hidden rounded-lg border border-gray-700 transition hover:scale-105">
+            <img src="${m.img}" class="w-full object-cover h-60" />
+          </a>
+        `).join('');
+        content.appendChild(wrapper);
+      }
     }
 
-    // Navigation Control
-    const contentArea = document.getElementById('content-area');
-
-    function showPage(page) {
-      document.getElementById('task-list').style.display = page === 'home' ? 'block' : 'none';
-      document.getElementById('spin-area').style.display = page === 'spin' ? 'flex' : 'none';
-      document.getElementById('withdraw-area').style.display = page === 'withdraw' ? 'flex' : 'none';
-
-      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('text-blue-500'));
-      document.getElementById(page + 'Btn').classList.add('text-blue-500');
-    }
-
-    document.getElementById('homeBtn').onclick = () => showPage('home');
-    document.getElementById('spinBtn').onclick = () => showPage('spin');
-    document.getElementById('withdrawBtn').onclick = () => showPage('withdraw');
-
-    // Spin Function
-    document.getElementById('spinButton').onclick = () => {
-      if (balance < 5) {
-        alert('Not enough balance! Need 5 ৳ to spin.');
-        return;
-      }
-      const random = Math.floor(Math.random() * 10);
-      if (random === 0) {
-        balance -= 5;
-        alert('Oops! You lost 5 ৳');
-      } else {
-        balance += random;
-        alert('Congratulations! You won ' + random + ' ৳');
-      }
-      saveToStorage('balance', balance);
-      document.getElementById('balance').innerText = balance;
-    };
-
-    // Default Page
-    showPage('home');
+    document.addEventListener('DOMContentLoaded', () => showTab('home'));
   </script></body>
 </html>
